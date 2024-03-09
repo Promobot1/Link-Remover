@@ -8,7 +8,7 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 logger = logging.getLogger(__name__)
 
 # Define your bot token
-bot_token = 'YOUR_BOT_TOKEN'
+bot_token = '6442848831:AAGqdJG-s_9mL9kG5aCAsuwtvgnpZzMxuPU'
 
 # Create the bot
 bot = Bot(token=bot_token)
