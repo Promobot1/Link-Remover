@@ -1,4 +1,4 @@
-from telegram import Update, User
+from telegram import Update, ChatMember
 from telegram.ext import Updater, CommandHandler, MessageHandler, CallbackContext, Filters
 
 # Replace 'YOUR_BOT_TOKEN' with your actual bot token
@@ -9,18 +9,13 @@ def start(update: Update, context: CallbackContext) -> None:
 
 def delete_links(update: Update, context: CallbackContext) -> None:
     message = update.message
-    user = message.from_user
-    if user and user.username:
-        bio = get_user_bio(user, context)
-        if bio and "t.me" in bio:
+    user_id = message.from_user.id
+    chat_id = message.chat_id
+    member = context.bot.get_chat_member(chat_id, user_id)
+    if member and member.user and member.user.username:
+        bio = member.user.description
+        if bio and "http" in bio:
             message.delete()
-
-def get_user_bio(user: User, context: CallbackContext) -> str:
-    try:
-        bio = context.bot.get_user_profile_photos(user.id).photos[0][0].get_file().file_path
-        return bio
-    except IndexError:
-        return ""
 
 def main() -> None:
     updater = Updater(TOKEN)
