@@ -1,4 +1,5 @@
-from telegram import Bot, Update, ParseMode
+from telegram import Bot, Update
+from telegram.constants import ParseMode
 from telegram.ext import Updater, MessageHandler, Filters, CallbackContext
 import logging
 
