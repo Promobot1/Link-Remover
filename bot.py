@@ -17,10 +17,11 @@ def check_bio_and_delete_messages(update: Update, context: CallbackContext):
     user = update.effective_user
     message = update.effective_message
 
-    # Check if the user has a profile photo
-    if user.photo:
-        # Analyze the profile photo to detect if it contains a link
-        # For demonstration purposes, let's assume any profile photo indicates a link in bio
+    # Fetch the user's profile photos
+    user_profile_photos = context.bot.get_user_profile_photos(user.id)
+
+    if user_profile_photos.total_count > 0:
+        # Assuming any profile photo indicates a link in bio
         # You can implement more sophisticated analysis here if needed
         # For example, you can use computer vision techniques to detect URLs or text in the photo
 
