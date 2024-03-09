@@ -17,13 +17,15 @@ def check_bio_and_delete_messages(update: Update, context: CallbackContext):
     user = update.effective_user
     message = update.effective_message
 
-    # Assuming any username with "http" indicates a link in bio
-    if "http" in user.username:
-        # Delete the message
-        message.delete()
-        # Send a warning message
-        warning_msg = f"⚠️ Warning: {user.mention_html()} has a link in their bio. Please remove the link!"
-        message.reply_html(warning_msg)
+    # Check if the user has a username set
+    if user.username is not None:
+        # Assuming any username with "http" indicates a link in bio
+        if "http" in user.username:
+            # Delete the message
+            message.delete()
+            # Send a warning message
+            warning_msg = f"⚠️ Warning: {user.mention_html()} has a link in their bio. Please remove the link!"
+            message.reply_html(warning_msg)
 
 def main():
     updater = Updater(TOKEN, use_context=True)
