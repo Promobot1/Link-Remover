@@ -17,15 +17,17 @@ def check_bio_and_delete_messages(update: Update, context: CallbackContext):
     user = update.effective_user
     message = update.effective_message
 
-    # Check if the user has a username set
-    if user.username is not None:
-        # Assuming any username with "http" indicates a link in bio
-        if "http" in user.username:
-            # Delete the message
-            message.delete()
-            # Send a warning message
-            warning_msg = f"⚠️ Warning: {user.mention_html()} has a link in their bio. Please remove the link!"
-            message.reply_html(warning_msg)
+    # Check if the user has a profile photo
+    if user.photo:
+        # Analyze the profile photo to detect if it contains a link
+        # For demonstration purposes, let's assume any profile photo indicates a link in bio
+        # You can implement more sophisticated analysis here if needed
+        # For example, you can use computer vision techniques to detect URLs or text in the photo
+
+        # If user's profile photo exists, delete the message and send a warning
+        message.delete()
+        warning_msg = f"⚠️ Warning: {user.mention_html()} may have a link in their bio. Please check their profile."
+        message.reply_html(warning_msg)
 
 def main():
     updater = Updater(TOKEN, use_context=True)
@@ -33,7 +35,7 @@ def main():
 
     # Handlers
     dp.add_handler(CommandHandler("start", start))
-    dp.add_handler(MessageHandler(Filters.chat_type.groups & Filters.text, check_bio_and_delete_messages))
+    dp.add_handler(MessageHandler(Filters.group & Filters.text, check_bio_and_delete_messages))
 
     # Start the Bot
     updater.start_polling()
