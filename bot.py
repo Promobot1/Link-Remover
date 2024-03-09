@@ -1,34 +1,27 @@
-from telegram import Bot, Update
-from telegram.constants import ParseMode
-from telegram.ext import Updater, MessageHandler, Filters, CallbackContext
-import logging
+from telegram.ext import Updater, MessageHandler, Filters
+from telegram import Bot, ParseMode
 
-# Enable logging
-logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-                    level=logging.INFO)
-logger = logging.getLogger(__name__)
+TOKEN = 'your_bot_token'
+bot = Bot(token=TOKEN)
+updater = Updater(token=TOKEN, use_context=True)
+dispatcher = updater.dispatcher
 
-# Define your bot token
-bot_token = '6442848831:AAGqdJG-s_9mL9kG5aCAsuwtvgnpZzMxuPU'
+def check_bio_and_delete_messages(update, context):
+    user_id = update.effective_user.id
+    chat_id = update.effective_chat.id
+    message_id = update.effective_message.message_id
+    
+    # Check the user's bio for a link
+    user_bio = context.bot.get_chat_member(chat_id, user_id).user.bio
+    if 'http' in user_bio:
+        # Delete the message
+        context.bot.delete_message(chat_id=chat_id, message_id=message_id)
+        # Send a warning message
+        warning_message = f"@{update.effective_user.username}, your message has been deleted because your bio contains a link."
+        context.bot.send_message(chat_id=chat_id, text=warning_message, parse_mode=ParseMode.MARKDOWN)
 
-# Create the bot
-bot = Bot(token=bot_token)
-updater = Updater(token=bot_token, use_context=True)
+# Add a message handler
+message_handler = MessageHandler(Filters.text & (~Filters.command), check_bio_and_delete_messages)
+dispatcher.add_handler(message_handler)
 
-# Define the message handler
-def message_handler(update: Update, context: CallbackContext):
-    user_bio = update.effective_user.bio
-    if 'http://' in user_bio or 'https://' in user_bio:
-        # Delete the message and warn the user
-        update.message.delete()
-        context.bot.send_message(chat_id=update.effective_chat.id,
-                                 text="Please remove the link from your bio to participate in the group.",
-                                 parse_mode=ParseMode.MARKDOWN)
-
-# Add the message handler to the dispatcher
-dp = updater.dispatcher
-dp.add_handler(MessageHandler(Filters.text & ~Filters.command, message_handler))
-
-# Start the bot
 updater.start_polling()
-updater.idle()
