@@ -31,7 +31,7 @@ def main():
 
     # Handlers
     dp.add_handler(CommandHandler("start", start))
-    dp.add_handler(MessageHandler(Filters.group & Filters.text, check_bio_and_delete_messages))
+    dp.add_handler(MessageHandler(Filters.chat_type.groups & Filters.text, check_bio_and_delete_messages))
 
     # Start the Bot
     updater.start_polling()
