@@ -1,42 +1,33 @@
-from pyrogram import Client, filters
-from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
-import asyncio
+from telegram import Bot, Update, ParseMode
+from telegram.ext import Updater, MessageHandler, Filters, CallbackContext
+import logging
 
-# Your Telegram API credentials
-api_id = "25139089"
-api_hash = "45fa74a814befe61aea26e35b0fdcb6b"
-bot_token = "6635436615:AAEYg-xscSj0oI4RPM5S9NeLlI_7jJ2rj14"
+# Enable logging
+logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+                    level=logging.INFO)
+logger = logging.getLogger(__name__)
 
-# Your channel username without the '@' symbol
-channel_username = "your_channel_username"
+# Define your bot token
+bot_token = 'YOUR_BOT_TOKEN'
 
-# Create a Pyrogram Client
-app = Client("my_bot", api_id=api_id, api_hash=api_hash, bot_token=bot_token)
+# Create the bot
+bot = Bot(token=bot_token)
+updater = Updater(token=bot_token, use_context=True)
 
-# Function to send a recurring message with customizable content
-async def send_recurring_message():
-    while True:
-        # Customize the message content, sticker, and button link
-        message_content = "Hello! This is a recurring message."
-        sticker_file_id = "CAACAgUAAxkBAAEBe6Rg3I9qZGXK-37XkfP2ITk8MYODiQACvgIAArhzogTN13ziW1lqHgQ"
-        button_text = "Click Here"
-        button_url = "https://example.com"
+# Define the message handler
+def message_handler(update: Update, context: CallbackContext):
+    user_bio = update.effective_user.bio
+    if 'http://' in user_bio or 'https://' in user_bio:
+        # Delete the message and warn the user
+        update.message.delete()
+        context.bot.send_message(chat_id=update.effective_chat.id,
+                                 text="Please remove the link from your bio to participate in the group.",
+                                 parse_mode=ParseMode.MARKDOWN)
 
-        # Create an InlineKeyboardMarkup with the button
-        keyboard = InlineKeyboardMarkup([[InlineKeyboardButton(button_text, url=button_url)]])
-
-        # Send the message with sticker and button
-        await app.send_message(channel_username, text=message_content, reply_markup=keyboard, sticker=sticker_file_id)
-
-        # Set the interval for the recurring message (in seconds)
-        await asyncio.sleep(3600)  # Adjust the interval as needed
-
-# Event handler for the bot starting
-@app.on_start()
-async def start_bot():
-    print("Bot has started!")
-    # Start the recurring message loop
-    asyncio.create_task(send_recurring_message())
+# Add the message handler to the dispatcher
+dp = updater.dispatcher
+dp.add_handler(MessageHandler(Filters.text & ~Filters.command, message_handler))
 
 # Start the bot
-app.run()
+updater.start_polling()
+updater.idle()
