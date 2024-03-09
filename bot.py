@@ -8,7 +8,7 @@ TOKEN = "6442848831:AAGqdJG-s_9mL9kG5aCAsuwtvgnpZzMxuPU"
 BOT_USERNAME = "@BioLinkRemoverBot"
 
 # Define the ID of the group where the bot will operate
-GROUP_ID = -1234567890  # Replace with your group's ID
+GROUP_ID = -1001848459006  # Replace with your group's ID
 
 def start(update: Update, context: CallbackContext):
     update.message.reply_text("Bot is active in this group!")
