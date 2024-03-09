@@ -2,7 +2,7 @@ from telegram import Update
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
 
 # Define your bot token
-TOKEN = "6442848831:AAGqdJG-s_9mL9kG5aCAsuwtvgnpZzMxuPU"
+TOKEN = "7027145577:AAG0KlWZqSDQjPZPOwCgHpJDHht5aJzZxNc"
 
 # Define your bot's username
 BOT_USERNAME = "@BioLinkRemoverBot"
