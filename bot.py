@@ -1,7 +1,7 @@
 from telegram.ext import Updater, MessageHandler, Filters
 from telegram import Bot, ParseMode
 
-TOKEN = 'your_bot_token'
+TOKEN = '6442848831:AAGqdJG-s_9mL9kG5aCAsuwtvgnpZzMxuPU'
 bot = Bot(token=TOKEN)
 updater = Updater(token=TOKEN, use_context=True)
 dispatcher = updater.dispatcher
